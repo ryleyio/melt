@@ -1,5 +1,5 @@
 {
-  "name": "melt-cli",
+  "name": "@ryleyio/melt",
   "version": "1.0.0",
   "description": "Full melt hash control - Terminal-based Puffco controller",
   "main": "src/index.js",

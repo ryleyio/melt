@@ -14,7 +14,7 @@ Full melt hash control. Terminal-based Puffco controller.
 ## Install
 
 ```bash
-npm install -g melt-cli
+npm install -g @ryleyio/melt
 ```
 
 ## Usage
@@ -38,7 +38,7 @@ melt reset        # fix connection issues
 
 Unofficial tool. Not affiliated with Puffco. Use at your own risk.
 
-<a href="https://buymeacoffee.com/yourname" target="_blank">
+<a href="https://buymeacoffee.com/ryleyio" target="_blank">
   <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" 
        alt="Buy Me A Coffee" 
        style="height: 60px !important;width: 217px !important;" >

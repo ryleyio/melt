@@ -14,8 +14,7 @@ Full melt hash control. Terminal-based Puffco controller.
 ## Install
 
 ```bash
-npm install
-npm link
+npm install -g melt-cli
 ```
 
 ## Usage

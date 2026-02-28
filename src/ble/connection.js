@@ -15,7 +15,7 @@ const {
 } = require('./protocol');
 
 class PuffcoConnection extends EventEmitter {
-  constructor() {
+  constructor(deviceFilter = 'proxy') {
     super();
     this.setMaxListeners(50); // Prevent EventEmitter warnings
     this.peripheral = null;
@@ -26,6 +26,7 @@ class PuffcoConnection extends EventEmitter {
     this.seq = 0;
     this.pendingResponses = new Map();
     this.deviceName = 'Unknown';
+    this.deviceFilter = deviceFilter.toLowerCase();
     // Protocol limits (set during auth)
     this.maxPayload = 125;
     this.maxFiles = 0;
@@ -170,7 +171,7 @@ class PuffcoConnection extends EventEmitter {
 
   _onDiscover(peripheral) {
     const name = peripheral.advertisement?.localName || '';
-    if (name.toLowerCase().includes('proxy')) {
+    if (name.toLowerCase().includes(this.deviceFilter)) {
       this.emit('discovered', peripheral);
     }
   }
@@ -341,10 +342,13 @@ class PuffcoConnection extends EventEmitter {
 
 // Singleton instance
 let instance = null;
+let currentFilter = null;
 
-function getConnection() {
-  if (!instance) {
-    instance = new PuffcoConnection();
+function getConnection(deviceFilter = 'proxy') {
+  // If filter changed, create new instance
+  if (!instance || currentFilter !== deviceFilter.toLowerCase()) {
+    instance = new PuffcoConnection(deviceFilter);
+    currentFilter = deviceFilter.toLowerCase();
   }
   return instance;
 }

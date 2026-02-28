@@ -38,16 +38,17 @@ let commands = null;
 program
   .name('melt')
   .description('Full melt hash control')
-  .version('1.0.0');
+  .version('1.0.0')
+  .option('-d, --device <name>', 'device to connect to (proxy, peak)', 'proxy');
 
 // ═══════════════════════════════════════════════════════════════
 // Connect
 // ═══════════════════════════════════════════════════════════════
 
-async function connect(spinner) {
+async function connect(spinner, deviceFilter = 'proxy') {
   if (connection?.connected) return true;
 
-  connection = getConnection();
+  connection = getConnection(deviceFilter);
   commands = new PuffcoCommands(connection);
 
   try {
@@ -69,10 +70,11 @@ program
   .alias('s')
   .description('Device status')
   .action(async () => {
+    const opts = program.opts();
     console.log();
     const spinner = ora({ text: 'connecting...', color: 'cyan' }).start();
 
-    if (!await connect(spinner)) {
+    if (!await connect(spinner, opts.device)) {
       process.exit(1);
     }
 
@@ -106,12 +108,13 @@ program
   .alias('h')
   .description('Start heat cycle (profile 0-3)')
   .action(async (profileArg) => {
+    const opts = program.opts();
     const profileIndex = parseInt(profileArg) || 0;
 
     console.log();
     const spinner = ora({ text: 'connecting...', color: 'cyan' }).start();
 
-    if (!await connect(spinner)) {
+    if (!await connect(spinner, opts.device)) {
       process.exit(1);
     }
 
@@ -230,10 +233,11 @@ program
   .alias('p')
   .description('List heat profiles')
   .action(async () => {
+    const opts = program.opts();
     console.log();
     const spinner = ora({ text: 'connecting...', color: 'cyan' }).start();
 
-    if (!await connect(spinner)) {
+    if (!await connect(spinner, opts.device)) {
       process.exit(1);
     }
 
@@ -275,10 +279,11 @@ program
   .alias('x')
   .description('Stop heat cycle')
   .action(async () => {
+    const opts = program.opts();
     console.log();
     const spinner = ora({ text: 'connecting...', color: 'cyan' }).start();
 
-    if (!await connect(spinner)) {
+    if (!await connect(spinner, opts.device)) {
       process.exit(1);
     }
 
@@ -332,6 +337,12 @@ if (process.argv.length === 2) {
   console.log(`  ${chalk.cyan('melt profiles')}   list profiles`);
   console.log(`  ${chalk.cyan('melt stop')}       stop heating`);
   console.log(`  ${chalk.cyan('melt reset')}      fix connection`);
+  console.log();
+  console.log(chalk.white('  options:'));
+  console.log();
+  console.log(`  ${chalk.cyan('-d, --device')}    device name ${chalk.gray('(proxy, peak)')}`);
+  console.log();
+  console.log(chalk.gray('  example: melt -d peak status'));
   console.log();
   process.exit(0);
 }
